@@ -29,25 +29,24 @@ class Open_window(ctk.CTk):
         self.Main_frame.destroy()
         self.title("Forgot Password")
         self.data={}
-        self.forgot_p_frames=[frame.forgotframe_1(self, self.data), frame.forgotframe_2(self, self.data), frame.forgotframe_3(self, self.data)]
-        self.forgot_p_frames[1].forget()
-        self.forgot_p_frames[2].forget()
-        self.frame_index=0
-        self.forgot_p_frames[self.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.M_frames=[frame.forgotframe_1(self, self.data), frame.forgotframe_2(self, self.data), frame.forgotframe_3(self, self.data)]
+        self.M_frames[1].forget()
+        self.M_frames[2].forget()
+        self.index=0
+        self.M_frames[self.index].place(relx=0, rely=0, relheight=1, relwidth=1)
+        for i in range(len(self.M_frames)):
+            self.frames['forgot_'+str(i)]=self.M_frames[i]
 
     def Signup(self):
         self.Main_frame.destroy()
         self.title("Register")
         self.data={}
-        self.signin_frames=[frame.signupframe_1(self, self.data), frame.signupframe_2(self, self.data)]
-        self.signin_frames[1].forget()
-        self.frame_index=0
-        self.signin_frames[self.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
-        
-
-
-    
-
+        self.M_frames=[frame.signupframe_1(self, self.data), frame.signupframe_2(self, self.data)]
+        self.M_frames[1].forget()
+        self.index=0
+        self.M_frames[self.index].place(relx=0, rely=0, relheight=1, relwidth=1)
+        for i in range(len(self.M_frames)):
+            self.frames['signin_'+str(i)]=self.M_frames[i]
 
 
     def destroy_all_frames(self):

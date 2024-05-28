@@ -124,3 +124,12 @@ def check_phoneno(phone_no):
     # Regular expression pattern to allow exactly 10 digits (0-9)
     pattern = re.compile(r'^[0-9]{10}$')
     return pattern.match(phone_no) 
+
+def switch(self):
+        self.master.M_frames[self.master.index].forget()
+        self.master.index=(self.master.index+1)%len(self.master.M_frames)
+        self.master.M_frames[self.master.index].tkraise()
+        self.master.M_frames[self.master.index].place(relx=0, rely=0, relheight=1, relwidth=1)
+
+def error(self, error_msg):
+    self.error_label.configure(text=error_msg)

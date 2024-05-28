@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter
-import functions
+from functions import *
 
 class mainframe(ctk.CTkFrame):
     def __init__(self, master):
@@ -8,8 +8,6 @@ class mainframe(ctk.CTkFrame):
         #The APX
         self.master=master
 
-        
-    
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
@@ -19,7 +17,7 @@ class mainframe(ctk.CTkFrame):
         self.w_label=ctk.CTkLabel(self.context_frame, text="Sawagatam", font=("times new roman", 38), text_color="white")
         self.w_label.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER)
 
-        self.error_label=ctk.CTkLabel(self.context_frame, text="error", font=("times new roman", 18), text_color="red")
+        self.error_label=ctk.CTkLabel(self.context_frame, text="", font=("times new roman", 18), text_color="red")
         self.error_label.place(relx=0.17, rely=0.35, anchor="w")
 
         self.u_entry=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="User_id", placeholder_text_color="black",font=("times new roman", 24),text_color="black", fg_color="white", corner_radius=50)
@@ -29,7 +27,7 @@ class mainframe(ctk.CTkFrame):
         self.p_entry.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
 
         self.value=ctk.BooleanVar()
-        self.show_password=ctk.CTkCheckBox(self.context_frame, text="Show password", font=("times new roman", 14),corner_radius=30, variable=self.value, command=lambda: functions.show_password(self.p_entry, self.value))
+        self.show_password=ctk.CTkCheckBox(self.context_frame, text="Show password", font=("times new roman", 14),corner_radius=30, variable=self.value, command=lambda:show_password(self.p_entry, self.value))
         self.show_password.place(relx=0.17, rely=0.58, anchor="w")
 
         self.forgot_password=ctk.CTkButton(self.context_frame, text="Birsiyo Password?",font=("times new roman", 14), corner_radius=50, text_color="white", fg_color="transparent", hover="disable", command= self.change_password)
@@ -49,16 +47,16 @@ class mainframe(ctk.CTkFrame):
         password=self.p_entry.get()
 
         if not user or not password:
-            self.error_label.configure(text="*Enter the password")
+            error(self,"*Enter the password")
 
-        elif not functions.user_exists(user):
-            self.error_label.configure(text="No user found")
+        elif not user_exists(user):
+            error(self,"No user found")
         
-        elif functions.check_credential(user, password):
+        elif check_credential(user, password):
             self.master.Login()
 
         else:
-            self.error_label.configure(text="*invalid password")
+            error(self,"*invalid password")
 
     def register(self):
         self.master.Signup()
@@ -72,7 +70,7 @@ class loginframe(ctk.CTkFrame):
     
         self.configure(fg_color="white")
 
-        self.back=ctk.CTkButton(self, text="<Back", command=lambda:functions.back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self, text="<Back", command=lambda:back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkFrame(self, height=725, width=500, corner_radius=50, fg_color="black")
@@ -100,7 +98,7 @@ class forgotframe_1(ctk.CTkFrame):
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:functions.back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkFrame(self.d_frame, height=725, width=500, corner_radius=50, fg_color="black")
@@ -121,22 +119,18 @@ class forgotframe_1(ctk.CTkFrame):
     def send(self):
             self.data['email']=self.E_entry.get()
             if not self.data['email']:
-                self.error_label.configure(text='Entry not filled')
-            elif not functions.email_exists(self.data['email']):
-                self.error_label.configure(text='User doesnot exist')
+                error(self,'Entry not filled')
+            elif not email_exists(self.data['email']):
+                error(self,'User doesnot exist')
             else:
-                self.data['otp']=functions.otp_generator()
+                self.data['otp']=otp_generator()
                 self.subject='OTP verification'
                 self.msg="The OTP is"+self.data['otp']
 
-                functions.send_mail(self.data['email'],self.subject, self.data['otp'])
-                self.switch()
+                send_mail(self.data['email'],self.subject, self.data['otp'])
+                switch(self)
 
-    def switch(self):
-        self.master.forgot_p_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%3
-        self.master.forgot_p_frames[self.master.frame_index].tkraise()
-        self.master.forgot_p_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
+    
 
 
 class forgotframe_2(ctk.CTkFrame):
@@ -149,7 +143,7 @@ class forgotframe_2(ctk.CTkFrame):
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=self.back, fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:switch(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkFrame(self.d_frame, height=725, width=500, corner_radius=50, fg_color="black")
@@ -170,25 +164,11 @@ class forgotframe_2(ctk.CTkFrame):
     def submit(self):
             self.data['V_otp']=self.E_entry.get()
             if not self.data['V_otp']:
-                self.error_label.configure(text="*enter otp")
+                error(self,"*enter otp")
             elif self.data['otp']!=self.data['V_otp']:
-                self.error_label.configure(text="*OTP donot match")
+                error(self,"*OTP donot match")
             else:
-                self.switch()
-
-    def switch(self):
-        self.master.forgot_p_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%3
-        self.master.forgot_p_frames[self.master.frame_index].tkraise()
-        self.master.forgot_p_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
-
-    
-    def back(self):
-        self.master.forgot_p_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%3
-        self.master.forgot_p_frames[self.master.frame_index].tkraise()
-        self.master.forgot_p_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
-
+                switch(self)
 
 class forgotframe_3(ctk.CTkFrame):
     def __init__(self, master, data):
@@ -200,7 +180,7 @@ class forgotframe_3(ctk.CTkFrame):
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=self.back, fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:switch(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkFrame(self.d_frame, height=725, width=500, corner_radius=50, fg_color="black")
@@ -224,18 +204,12 @@ class forgotframe_3(ctk.CTkFrame):
     def submit(self):
             self.data['password']=self.P_entry.get()
             if not self.data['password'] or not self.CP_entry.get():
-                self.error_label.configure(text='entry not complete')
+                error(self,'entry not complete')
             elif self.data['password']!=self.CP_entry.get():
-                self.error_label.configure(text='Password donot match')
+                error(self,'Password donot match')
             else:
-                functions.updating_password(self.data)
+                updating_password(self.data)
                 print("ok")
-    
-    def back(self):
-        self.master.forgot_p_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%3
-        self.master.forgot_p_frames[self.master.frame_index].tkraise()
-        self.master.forgot_p_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
 
 
 
@@ -250,7 +224,7 @@ class signupframe_1(ctk.CTkFrame):
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:functions.back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:back2main(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkScrollableFrame(self.d_frame, height=625, width=500, fg_color="black", corner_radius=50)
@@ -276,13 +250,13 @@ class signupframe_1(ctk.CTkFrame):
         self.phone_no.grid(row=5, column=0, pady=20)
 
         self.securityquestion_var=ctk.StringVar(value="Select Security Question")
-        self.securityquestion=["What is your mother's maiden name?", "What is the name of your first pet?", "In what city were you born?"]
+        self.securityquestion=["What is your mother's name?", "What is the name of your first pet?", "In what city were you born?"]
         self.question=ctk.CTkComboBox(self.context_frame,height=50 , width=350,fg_color="white",variable=self.securityquestion_var, values=self.securityquestion, text_color="black")
         self.question.grid(row=6, column=0, pady=20)
         self.answer=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="", placeholder_text_color="black", fg_color="white",text_color="black", corner_radius=50)
         self.answer.grid(row=7, column=0, pady=20)
-        self.errorlabel=ctk.CTkLabel(self.context_frame, text="", font=('times new roman', 18), text_color="red")
-        self.errorlabel.grid(row=8, column=0, pady=0)
+        self.error_label=ctk.CTkLabel(self.context_frame, text="", font=('times new roman', 18), text_color="red")
+        self.error_label.grid(row=8, column=0, pady=0)
         
         self.continue_button=ctk.CTkButton(self.context_frame, height=50, width=150, text="Continue",text_color="black", font=("times new roman", 24), fg_color="red", command=self.next)
         self.continue_button.grid(row=9, column=0, pady=20)
@@ -301,35 +275,28 @@ class signupframe_1(ctk.CTkFrame):
                 i=i+1
 
         if i>0:
-            self.errorlabel.configure(text="*Answer every field")
+            error(self,"*Answer every field")
 
-        elif not functions.is_valid_chars(self.data['name']):
+        elif not is_valid_chars(self.data['name']):
             print("Name and Surname must contain only English letters.")
-            self.errorlabel.configure(text='Use Only English Lettes in Name')
+            error(self,'Use Only English Lettes in Name')
         # Check if fields contain only English letters and standard characters
 
         elif self.data['security_question'] == "Select Security Question":
-            self.errorlabel.configure(text='Invalid Security Question')
+            error(self,'Invalid Security Question')
 
-        elif not functions.is_valid_email(self.data['email']):
-            self.errorlabel.configure(text="Please enter a valid email address")
+        elif not is_valid_email(self.data['email']):
+            error(self,"Please enter a valid email address")
         # Call the register_user function from functions.py
 
-        elif functions.email_exists(self.data['email']):
-            self.errorlabel.configure(text='User already exists')
+        elif email_exists(self.data['email']):
+            error(self,'User already exists')
 
-        elif not functions.check_phoneno(self.data["phone_no"]):
-            self.errorlabel.configure(text='Enter phone Number in standard format')
+        elif not check_phoneno(self.data["phone_no"]):
+            error(self,'Enter phone Number in standard format')
 
         else:
-            
-            self.switch()
-    
-    def switch(self):
-        self.master.signin_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%2
-        self.master.signin_frames[self.master.frame_index].tkraise()
-        self.master.signin_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
+            switch(self)
         
     
         
@@ -343,7 +310,7 @@ class signupframe_2(ctk.CTkFrame):
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=self.back, fg_color="blue", hover_color="black", corner_radius=30)
+        self.back=ctk.CTkButton(self.d_frame, text="<Back", command=lambda:switch(self), fg_color="blue", hover_color="black", corner_radius=30)
         self.back.place(x=30, y=20)
 
         self.context_frame=ctk.CTkScrollableFrame(self.d_frame, height=625, width=500, fg_color="black", corner_radius=50)
@@ -362,29 +329,24 @@ class signupframe_2(ctk.CTkFrame):
         self.confirm_password=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="Confirm_Password",show="*", placeholder_text_color="black",text_color="black", fg_color="white", corner_radius=50)
         self.confirm_password.grid(row=3, column=0, pady=20)
 
-        self.errorlabel=ctk.CTkLabel(self.context_frame, text="", font=('times new roman', 18), text_color="red")
-        self.errorlabel.grid(row=4, column=0, pady=0)
+        self.error_label=ctk.CTkLabel(self.context_frame, text="", font=('times new roman', 18), text_color="red")
+        self.error_label.grid(row=4, column=0, pady=0)
 
         self.submit_button=ctk.CTkButton(self.context_frame, height=50, width=150, text="Submit",text_color="black", font=("times new roman", 24), fg_color="red", command=self.submit)
         self.submit_button.grid(row=5, column=0, pady=20)
 
-    def back(self):
-        self.master.signin_frames[self.master.frame_index].forget()
-        self.master.frame_index=(self.master.frame_index+1)%2
-        self.master.signin_frames[self.master.frame_index].tkraise()
-        self.master.signin_frames[self.master.frame_index].place(relx=0, rely=0, relheight=1, relwidth=1)
 
     def submit(self):
         self.data['user_id']=self.user_id.get()
         self.data['password']=self.password.get()
 
         if not self.data['user_id'] or not self.data['password'] or not self.confirm_password.get():
-            self.errorlabel.configure(text="*Complete all field")
+            error(self,"*Complete all field")
         elif self.data['password']!=self.confirm_password.get():
-            self.errorlabel.configure(text="*Password donot match")
-        elif functions.user_exists(self.data['user_id']):
-            self.errorlabel.configure(text="*User name already in use create a different one")
+            error(self,"*Password donot match")
+        elif user_exists(self.data['user_id']):
+            error(self,"*User name already in use create a different one")
         else:
-            functions.insert_reg_data(self.data)
-            functions.back2main(self)
+            insert_reg_data(self.data)
+            back2main(self)
 
