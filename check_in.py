@@ -35,8 +35,10 @@ def check_and_create_database(config, database_name, tables):
         return None
     finally:
         cursor.close()
-        check_and_create_tables(config, tables)
     
+    # Update config to connect to the newly created/existing database
+    config['database'] = database_name
+    check_and_create_tables(config, tables)
     
     cnx.close()
     return config
@@ -58,6 +60,7 @@ def check_and_create_tables(config, tables):
     for table_name, table_description in tables.items():
         try:
             cursor.execute(f"DESCRIBE {table_name}")
+            cursor.fetchall()  # Fetch all results to ensure the cursor is fully consumed
             print(f"Table '{table_name}' already exists.")
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_TABLE_ERROR:
@@ -68,11 +71,26 @@ def check_and_create_tables(config, tables):
     cursor.close()
     cnx.close()
 
-config={'host':'localhost', 'user':'root', 'password':'solo3111'}
-database_name='data'
+config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'solo3111'
+}
+
+database_name = 'data'
 tables = {
-        'registration':"CREATE table registration (name varchar(40) not null, dob date)",
-        'log':"CREATE table log(user varchar(20) not null, time int)"}
+    'registration': """CREATE TABLE registration (
+        user_id INT NOT NULL PRIMARY KEY,
+        name VARCHAR(40) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        dob DATE NOT NULL,
+        address VARCHAR(255),
+        phone_no BIGINT NOT NULL,
+        security_question VARCHAR(255) NOT NULL,
+        answer VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL
+    )""",
+    'log': "CREATE TABLE log (user VARCHAR(20) NOT NULL, time INT)"
+}
 
 check_and_create_database(config, database_name, tables)
-
