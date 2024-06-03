@@ -320,7 +320,7 @@ class signupframe_2(ctk.CTkFrame):
         self.info_label=ctk.CTkLabel(self.context_frame, text="Step 2", font=("times new roman", 30), text_color="white")
         self.info_label.grid(row=0, column=0, pady=(10,50))
 
-        self.user_id=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="User_id", placeholder_text_color="black",text_color="black", fg_color="white", corner_radius=50)
+        self.user_id=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="User_name", placeholder_text_color="black",text_color="black", fg_color="white", corner_radius=50)
         self.user_id.grid(row=1, column=0, pady=20)
 
         self.password=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="Password",show="*", placeholder_text_color="black",text_color="black", fg_color="white", corner_radius=50)
@@ -337,16 +337,17 @@ class signupframe_2(ctk.CTkFrame):
 
 
     def submit(self):
-        self.data['user_id']=self.user_id.get()
+        self.data['user_name']=self.user_id.get()
         self.data['password']=self.password.get()
 
-        if not self.data['user_id'] or not self.data['password'] or not self.confirm_password.get():
+        if not self.data['user_name'] or not self.data['password'] or not self.confirm_password.get():
             error(self,"*Complete all field")
         elif self.data['password']!=self.confirm_password.get():
             error(self,"*Password donot match")
-        elif user_exists(self.data['user_id']):
+        elif user_exists(self.data['user_name']):
             error(self,"*User name already in use create a different one")
         else:
+            self.data['time']=time()
             insert_reg_data(self.data)
             back2main(self)
 

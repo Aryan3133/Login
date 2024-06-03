@@ -28,19 +28,20 @@ def check_and_create_database(config, database_name, tables):
         result = cursor.fetchone()
         if result:
             print(f"Database '{database_name}' already exists.")
+            # Update config to connect to the newly created/existing database
+            config['database'] = database_name
+            check_and_create_tables(config, tables)
         else:
             create_database(cursor, database_name)
+            # Update config to connect to the newly created/existing database
+            config['database'] = database_name
+            check_and_create_tables(config, tables)
     except mysql.connector.Error as err:
         print(f"Error checking database '{database_name}': {err}")
         return None
     finally:
         cursor.close()
-    
-    # Update config to connect to the newly created/existing database
-    config['database'] = database_name
-    check_and_create_tables(config, tables)
-    
-    cnx.close()
+        cnx.close()
     return config
 
 def create_table(cursor, table_name, table_description):
@@ -63,10 +64,7 @@ def check_and_create_tables(config, tables):
             cursor.fetchall()  # Fetch all results to ensure the cursor is fully consumed
             print(f"Table '{table_name}' already exists.")
         except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_BAD_TABLE_ERROR:
                 create_table(cursor, table_name, table_description)
-            else:
-                print(f"Error checking table '{table_name}': {err}")
 
     cursor.close()
     cnx.close()
@@ -80,17 +78,23 @@ config = {
 database_name = 'data'
 tables = {
     'registration': """CREATE TABLE registration (
-        user_id INT NOT NULL PRIMARY KEY,
+        user_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+        user_name VARCHAR(20) NOT NULL UNIQUE,
         name VARCHAR(40) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
         dob DATE NOT NULL,
         address VARCHAR(255),
-        phone_no BIGINT NOT NULL,
+        phone_no BIGINT NOT NULL UNIQUE,
         security_question VARCHAR(255) NOT NULL,
         answer VARCHAR(255) NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        time DATETIME NOT NULL
     )""",
-    'log': "CREATE TABLE log (user VARCHAR(20) NOT NULL, time INT)"
+
+    'log': """CREATE TABLE log 
+    (user VARCHAR(20) NOT NULL,
+      time INT NOT NULL,
+      FOREIGN KEY (user) REFERENCES registration(user_name))"""
 }
 
 check_and_create_database(config, database_name, tables)

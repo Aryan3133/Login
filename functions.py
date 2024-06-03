@@ -5,6 +5,10 @@ import re
 import smtplib
 from email.message import EmailMessage
 import random
+import datetime
+
+def time():
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 def otp_generator():
     otp=""
@@ -41,9 +45,9 @@ def insert_reg_data(dict):
      cnx, cursor=connect_to_server()
      cursor.execute("insert into registration"
                     "(name, email, dob, address,"
-                    " phone_no, security_question, answer, user_id, password)"
+                    " phone_no, security_question, answer,user_name, password, time)"
                      " values(%(name)s,%(email)s, %(dob)s,"
-                      " %(address)s, %(phone_no)s, %(security_question)s, %(answer)s, %(user_id)s, %(password)s)", dict)
+                      " %(address)s, %(phone_no)s, %(security_question)s, %(answer)s,%(user_name)s, %(password)s, %(time)s)", dict)
      cnx.commit()
      close_server(cnx)
 
@@ -65,7 +69,7 @@ def show_password(p_entry, value):
 def check_credential(user, password):
     cnx, cursor = connect_to_server()
     try:
-        cursor.execute("SELECT * FROM registration WHERE user_id=%s AND password= %s", (user, password))
+        cursor.execute("SELECT * FROM registration WHERE user_name=%s AND password= %s", (user, password))
         result = cursor.fetchone()
 
         return result
