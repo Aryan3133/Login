@@ -5,7 +5,8 @@ class Open_window(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("1000x750")
-        self.title("Login")
+        self.title("Authentication System")
+        self.iconbitmap("icon.ico")
         #create a frame
         self.data={}
         self.Main_frame=frame.mainframe(self, self.data)
@@ -14,7 +15,7 @@ class Open_window(ctk.CTk):
 
     def Main(self):
         self.destroy_all_frames()
-        self.title("Login")
+        self.title("Authentication System")
         self.data={}
         self.Main_frame=frame.mainframe(self, self.data)
         self.Main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
