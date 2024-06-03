@@ -128,8 +128,8 @@ def user_exists(user):
         close_server(cnx)
 
 def is_valid_chars(input):
-    # Regular expression pattern to allow only English letters and standard characters
-    pattern = re.compile(r'^[a-zA-Z0-9_\-]+$')
+    # Regular expression pattern to allow only English letters, numbers, underscores, hyphens, and spaces
+    pattern = re.compile(r'^[a-zA-Z0-9_\- ]+$')
     return pattern.match(input) 
 
 def check_phoneno(phone_no):

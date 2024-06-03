@@ -332,13 +332,26 @@ class signupframe_2(ctk.CTkFrame):
         self.password.grid(row=2, column=0, pady=20)
 
         self.confirm_password=ctk.CTkEntry(self.context_frame, height=50, width=350, placeholder_text="Confirm_Password",show="*", placeholder_text_color="black",text_color="black", fg_color="white", corner_radius=50)
-        self.confirm_password.grid(row=3, column=0, pady=20)
+        self.confirm_password.grid(row=3, column=0, pady=(20,0))
+
+        self.value=ctk.BooleanVar()
+        self.show_password=ctk.CTkCheckBox(self.context_frame, text="Show password", font=("times new roman", 14),corner_radius=30, variable=self.value, command=self.show_password)
+        self.show_password.grid(row=4, column=0, padx=80, pady=(10,20), sticky= 'w')
 
         self.error_label=ctk.CTkLabel(self.context_frame, text="", font=('times new roman', 18), text_color="red")
-        self.error_label.grid(row=4, column=0, pady=0)
+        self.error_label.grid(row=5, column=0, pady=0)
 
         self.submit_button=ctk.CTkButton(self.context_frame, height=50, width=150, text="Submit",text_color="black", font=("times new roman", 24), fg_color="red", command=self.submit)
-        self.submit_button.grid(row=5, column=0, pady=20)
+        self.submit_button.grid(row=6, column=0, pady=20)
+
+    def show_password(self):
+        if self.value.get():
+            self.password.configure(show="")
+            self.confirm_password.configure(show="")
+
+        else:
+            self.password.configure(show="*") 
+            self.confirm_password.configure(show="*")
 
 
     def submit(self):
