@@ -7,14 +7,16 @@ class Open_window(ctk.CTk):
         self.geometry("1000x750")
         self.title("Login")
         #create a frame
-        self.Main_frame=frame.mainframe(self)
+        self.data={}
+        self.Main_frame=frame.mainframe(self, self.data)
         self.Main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.frames={}
 
     def Main(self):
         self.destroy_all_frames()
         self.title("Login")
-        self.Main_frame=frame.mainframe(self)
+        self.data={}
+        self.Main_frame=frame.mainframe(self, self.data)
         self.Main_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.frames["main"]=self.Main_frame
 

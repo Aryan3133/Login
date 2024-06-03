@@ -51,6 +51,15 @@ def insert_reg_data(dict):
      cnx.commit()
      close_server(cnx)
 
+def insert_log_data(dict):
+     cnx, cursor=connect_to_server()
+     cursor.execute("insert into log"
+                    "(user,time)"
+                     " values(%(user)s, %(time)s)", dict)
+     cnx.commit()
+     close_server(cnx)
+
+
 def updating_password(dict):
      cnx, cursor=connect_to_server()
      cursor.execute("update registration set password=%(password)s where email=%(email)s", dict)
@@ -71,7 +80,6 @@ def check_credential(user, password):
     try:
         cursor.execute("SELECT * FROM registration WHERE user_name=%s AND password= %s", (user, password))
         result = cursor.fetchone()
-
         return result
 
     finally:
@@ -111,7 +119,7 @@ def email_exists(email):
 def user_exists(user):
     cnx, cursor = connect_to_server()
     try:
-        cursor.execute("SELECT * FROM registration WHERE user_id like %s", (user,))
+        cursor.execute("SELECT * FROM registration WHERE user_name like %s", (user,))
         result = cursor.fetchone()
         return result
 

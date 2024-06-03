@@ -93,7 +93,7 @@ tables = {
 
     'log': """CREATE TABLE log 
     (user VARCHAR(20) NOT NULL,
-      time INT NOT NULL,
+      time DATETIME NOT NULL,
       FOREIGN KEY (user) REFERENCES registration(user_name))"""
 }
 

@@ -3,10 +3,11 @@ import tkinter
 from functions import *
 
 class mainframe(ctk.CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, data):
         super().__init__(master)
         #The APX
         self.master=master
+        self.data=data
 
         self.d_frame=ctk.CTkFrame(self, fg_color="white")
         self.d_frame.place(relx=0, rely=0, relheight=1, relwidth=1)
@@ -53,12 +54,16 @@ class mainframe(ctk.CTkFrame):
             error(self,"No user found")
         
         elif check_credential(user, password):
+            self.data['user']=user
+            self.data['time']=time()
+            insert_log_data(self.data)
             self.master.Login()
 
         else:
             error(self,"*invalid password")
 
     def register(self):
+        
         self.master.Signup()
 
 
